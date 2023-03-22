@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Real time bus tracking</title>
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+	<script src="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js"></script>
+	<link href="https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css" rel="stylesheet" />
+	<link href="style.css" rel="stylesheet" />
+	<script src="./token.js"></script>
+</head>
+
+<body>
+
+	<div id="map"></div>
+	<div class="map-overlay top">
+		<button style="font-size:  2em;" onclick="tracking()">Start tracking</button>
+	</div>
+
+	<script>
+
+		mapboxgl.accessToken = token;
+		var map = new mapboxgl.Map({
+			container: "map",
+			style: "mapbox://sytles/mapbox/streets-v11",
+			center: [-71.101, 42.358],
+			zoom: 14,
+		});
+
+		var markers = [];
+
+		async function tracking() {
+			const locations = await getBusLocations();
+			await removeMarkers();
+			await showBuses(locations);
+			setTimeout(tracking, 1500);
+		}
+
+		async function getBusLocations() {
+			const url = "https://api-v3.mbta.com/vehicles?filter[route]=1&include=trip";
+			const response = await fetch(url);
+			const json = await response.json();
+			return json.data;
+		}
+
+		async function removeMarkers() {
+			await markers.forEach((marker) => {
+				marker.remove();
+			});
+		}
+
+		async function showBuses(locations) {
+			await locations.forEach((location) => {
+				var marker = new mapboxgl.Marker()
+					.setLngLat([location.attributes.longitude, location.attributes.latitude])
+					.addTo(map);
+				markers.push(marker);
+			});
+		}
+
+	</script>
+
+</body>
+
+</html>
