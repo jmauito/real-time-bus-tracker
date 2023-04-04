@@ -1,5 +1,7 @@
 # Real time bus tracker
 
+![](./img/thumbnail.png)
+
 ## Description
 
 Real-time tracking of the location of buses from line 1 in Boston. This is an exercise proposal by Dr. Abel Sanchez (abelsan). In this version, all buses from the line are tracked, this is an improvement on the original exercise that tracked only one bus. In addition, the structure of files was improved.
